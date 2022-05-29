@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "Group57_Cab301_Ass3/1.0.0": {
+        "runtime": {
+          "Group57_Cab301_Ass3.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Group57_Cab301_Ass3/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
