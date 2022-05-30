@@ -10,7 +10,7 @@ namespace Assignment
             Member Shaun = new Member("Shaun", "Hoang", "0450880110", "2001");
             Member Marshall = new Member("Marshall", "Le", "0987654321", "1234");
             Member Ni = new Member("Ni", "Le", "0123456789", "5678");
-
+            system.addExistingMovietoSystem();
             system.addMember(Shaun);
             system.addMember(Marshall);
             system.addMember(Ni);

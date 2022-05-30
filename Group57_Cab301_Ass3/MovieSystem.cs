@@ -5,9 +5,9 @@ public class MovieSystem: iMovieSystem
     const int selection1 = 1, selection2 = 2, selection3 = 3,
             selection4 = 4, selection5 = 5, selection6 = 6, selection0 = 0;
 
-    Movie StarWars = new("Starwars", MovieGenre.Action, MovieClassification.G, 90, 10);
-    Movie Loki = new("Loki", MovieGenre.Action, MovieClassification.M15Plus, 50, 10);
-    Movie DrStrange = new("DrStrange", MovieGenre.Action, MovieClassification.M15Plus, 50, 10);
+    Movie StarWars = new("Starwars", MovieGenre.Action, MovieClassification.G, 90, 5);
+    Movie Loki = new("Loki", MovieGenre.Action, MovieClassification.M15Plus, 50, 8);
+    Movie DrStrange = new("DrStrange", MovieGenre.Action, MovieClassification.M15Plus, 50, 7);
     Movie Avengers = new("Avengers", MovieGenre.Action, MovieClassification.M15Plus, 50, 10);
     Movie IronMan = new("IronMan", MovieGenre.Action, MovieClassification.M15Plus, 120, 10);
 
@@ -21,9 +21,6 @@ public class MovieSystem: iMovieSystem
         movieList.Insert(DrStrange);
         movieList.Insert(Avengers);
         movieList.Insert(IronMan);
-        Console.WriteLine(Loki.ToString());
-        movieList.ToArray();
-        Console.WriteLine(movieList.Number);
     }
     
 
@@ -35,9 +32,17 @@ public class MovieSystem: iMovieSystem
 
     public void addQuantity(IMovie aMovie, int quantity)
     {
-        aMovie.TotalCopies += quantity;
-        aMovie.AvailableCopies += quantity;
-        Console.WriteLine(quantity + "DVDs has been added to the" + aMovie.Title);
+        if (aMovie.TotalCopies + quantity > 10)
+        {
+            Console.WriteLine("The total of DVDs exceed the maximum 10 DVDs of a movie with " + (aMovie.TotalCopies + quantity - 10) + " DVDs. Please try add smaller number");
+        }
+        else
+        {
+            aMovie.TotalCopies += quantity;
+            aMovie.AvailableCopies += quantity;
+            Console.WriteLine(quantity + " DVDs has been added to the " + aMovie.Title + ". Available Copies: " + aMovie.AvailableCopies);
+        }
+        
     }
 
     public void addMember(IMember aMember)
@@ -60,7 +65,6 @@ public class MovieSystem: iMovieSystem
 
             Console.WriteLine("1. Staff Login\n2. Member Login\n0. Exit");
             Console.WriteLine("Please enter your choice ==> (1/2/0)");
-            Console.WriteLine(movieList.Number);
             string enterValue = Console.ReadLine();
             int optionInput = InputValidation(enterValue);
             
@@ -156,35 +160,82 @@ public class MovieSystem: iMovieSystem
                 Console.WriteLine("Find if the movie is existing in the system: ");
                 string movie = Console.ReadLine();
                 // check if the movie is existing, then just need to add the quantity to the existing => Assume that the movie title is unique
-                Console.WriteLine(movieList.Search(movie));
-                if(true)
-                    {
-                    Console.WriteLine("The movie existing in the system");
+                IMovie findMovie = movieList.Search(movie);
+                if (findMovie != null)
+                {
+                    Console.WriteLine("The movie exist in the system. You just need add on quantity");
                     Console.WriteLine("Please choose the quantity of DVDs you want to add to the movie: ");
-                    string enterValue = Console.ReadLine();
-                    int quantityInput = InputValidation(enterValue);
-                    //if ((quantityInput + aMovie.TotalCopies) > 10)
-                    //{
-                    //    Console.WriteLine("The amount of DVDs exceed the limit by " + (quantityInput + aMovie.TotalCopies - 10) + "DVDs, please try again");
-                    //}
-
+                    string enterQuantity = Console.ReadLine();
+                    int quantityInput = InputValidation(enterQuantity);
                     addQuantity(movieList.Search(movie), quantityInput);
                 } else
                 {
                     // check if the movie is not existing in the library
+                    Console.WriteLine("The movie does not exist in the system");
                     Console.WriteLine("Add new dvds of a movie");
                     Console.WriteLine("Enter movie name: ");
                     string movieName = Console.ReadLine();
+                    Console.WriteLine("List of options for genre: ");
+                    Console.WriteLine("1: Action");
+                    Console.WriteLine("2: Comedy");
+                    Console.WriteLine("3: History");
+                    Console.WriteLine("4: Drama");
+                    Console.WriteLine("5: Western");
                     Console.WriteLine("Enter movie genre: ");
-                    int movieGenre = InputValidation(Console.ReadLine());
+                    string enterGenre = Console.ReadLine();
+                    if (Convert.ToInt32(enterGenre) < 1 || Convert.ToInt32(enterGenre) > 5) // Check if the input out of option
+                    {
+                        Console.WriteLine("Invalid genre. Please try again with the option from 1-5");
+                        break;
+                    }
+                    int movieGenre = InputValidation(enterGenre);
+                    if (movieGenre == -1) // Check if input is invalid
+                    {
+                        Console.WriteLine("Invalid genre. Please try again");
+                        break;
+                    }
+                    Console.WriteLine("List of options for classification: ");
+                    Console.WriteLine("1: G");
+                    Console.WriteLine("2: PG");
+                    Console.WriteLine("3: M");
+                    Console.WriteLine("4: M15Plus");
                     Console.WriteLine("Enter movie classification: ");
-                    int movieClassification = InputValidation(Console.ReadLine());
+                    string enterClassification = Console.ReadLine();
+                    if (Convert.ToInt32(enterClassification) < 1 || Convert.ToInt32(enterClassification) > 3) // Check if the input out of option
+                    {
+                        Console.WriteLine("Invalid genre. Please try again with the option from 1-3");
+                        break;
+                    }
+                    int movieClassification = InputValidation(enterClassification);
+                    if (movieClassification == -1)
+                    {
+                        Console.WriteLine("Invalid classification. Please try again");
+                        break;
+                    }
                     Console.WriteLine("Enter movie duration: ");
-                    int movieDuration = InputValidation(Console.ReadLine());
+                    string enterDuration = Console.ReadLine();
+                    int movieDuration = InputValidation(enterDuration);
+                    if (movieDuration == -1)
+                    {
+                        Console.WriteLine("Invalid Duration. Please try again");
+                        break;
+                    }
                     Console.WriteLine("Enter movie quantity: ");
-                    int quantity = InputValidation(Console.ReadLine());
+                    string enterQuantity = Console.ReadLine();
+                    int quantity = InputValidation(enterQuantity);
+                    if (quantity == -1)
+                    {
+                        Console.WriteLine("Invalid Quantity. Please try again");
+                        break;
+                    }
+                    if (quantity > 10)
+                    {
+                        Console.WriteLine("The maximum quantity for each movie in the system is 10. Please try again");
+                        break;
+                    }
                     Movie newMovie = new Movie(movieName, (MovieGenre)movieGenre, (MovieClassification)movieClassification, movieDuration, quantity);
                     addMovie(newMovie);
+                    Console.WriteLine(newMovie.ToString());
                 }
                 
                 break;
