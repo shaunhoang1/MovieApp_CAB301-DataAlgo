@@ -45,6 +45,17 @@ public class MovieSystem: iMovieSystem
         
     }
 
+    public void deleteDVDs(IMovie aMovie, int quantity)
+    {
+        aMovie.TotalCopies -= quantity;
+        aMovie.AvailableCopies -= quantity;
+        if (aMovie.TotalCopies <= 0) 
+        {
+            Console.WriteLine("There is no DVDs left, delete the movie out of the system");
+            movieList.Delete(aMovie);
+        }
+    }
+
     public void addMember(IMember aMember)
     {
         users.Add(aMember);
@@ -243,11 +254,14 @@ public class MovieSystem: iMovieSystem
 
             case selection2:
                 // case remove entire movie out of the library
-                Console.WriteLine("Movie Title has been removed out of the system");
-
-                // case remove quantity of dvds of movie out of the library
-                // if there is no quantity left, remove entire movie
-                Console.WriteLine("Quantity of dvds has been removed out of a movie");
+                // Console.WriteLine(movieList.T); How can I print the list of existing Movie, the ToArray not seem to work
+                Console.WriteLine("Please choose a movie you want to remove DVDs: ");
+                string movieNameDelete = Console.ReadLine();
+                Console.WriteLine("Please choose the quantity of DVDs you want to add to the movie: ");
+                string enterDvdQuantity = Console.ReadLine();
+                int quantityDvdInput = InputValidation(enterDvdQuantity);
+                Console.WriteLine(quantityDvdInput + " Dvds has been removed out of a movie");
+                deleteDVDs(movieList.Search(movieNameDelete), quantityDvdInput); 
                 break;
 
             case selection3:
