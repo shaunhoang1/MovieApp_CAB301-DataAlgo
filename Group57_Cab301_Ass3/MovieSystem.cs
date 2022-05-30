@@ -22,8 +22,6 @@ public class MovieSystem: iMovieSystem
         movieList.Insert(Avengers);
         movieList.Insert(IronMan);
     }
-    
-
     public void addMovie(Movie aMovie)
     {
         movieList.Insert(aMovie);
@@ -285,12 +283,21 @@ public class MovieSystem: iMovieSystem
                 string enterLastName = Console.ReadLine();
                 Console.WriteLine("Please enter user's phone number: ");
                 string enterPhoneNumber = Console.ReadLine();
-;
+                if(!IMember.IsValidContactNumber(enterPhoneNumber))
+                {
+                    Console.WriteLine("Invalid Phone Number. It must contain 10 digits start with digit 0. Please try again");
+                    break;
+                }
                 Console.WriteLine("Please enter user's pin/password: ");
                 string enterPassword = Console.ReadLine();
-
+                if (!IMember.IsValidPin(enterPassword))
+                {
+                    Console.WriteLine("Invalid pin. It must contain 4-6 digits. Please try again");
+                    break;
+                }
                 Member newMember = new Member(enterFirstName, enterLastName, enterPhoneNumber, enterPassword);
                 addMember(newMember);
+                Console.WriteLine("Register successfully with username: " + enterFirstName.ToLower() + "." + enterLastName.ToLower()); // username will have the format: firstname.lastname
                 
                 break;
 
