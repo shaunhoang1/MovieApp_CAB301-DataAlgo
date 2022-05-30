@@ -112,6 +112,7 @@ public class MovieSystem: iMovieSystem
                 //Check the account
                 if (accountname == "staff" && password == "today123")
                 {
+                    Console.WriteLine("Login Successfully as Staff");
                     StaffLogin();
                 }
                 else
@@ -123,14 +124,29 @@ public class MovieSystem: iMovieSystem
 
             case member_login:
                 //Enter account and password 
-                Console.WriteLine("Enter your account name: ");
-                accountname = Console.ReadLine();
-                Console.WriteLine("Enter your Password: ");
-                password = Console.ReadLine();
-                // if (users.Search((Member)accountname))
-                
+                Console.WriteLine("Enter your First name: ");
+                string firstName = Console.ReadLine();
+                Console.WriteLine("Enter your Last name: ");
+                string lastName = Console.ReadLine();
+                IMember searchUser =  new Member(firstName, lastName);
+                IMember verifyUser = users.Find(searchUser);
+                Console.WriteLine(verifyUser.ToString()); // Should print out the verify user with full information, currently only name. The problem might in the Find function?
                 //Check the account
-                MemberLogin();
+                if (users.Search(searchUser))
+                {
+                    Console.WriteLine("Enter your Password: ");
+                    password = Console.ReadLine();
+                    Console.WriteLine(users.Find(searchUser).Pin);
+                    if (password == users.Find(searchUser).Pin)
+                    {
+                        Console.WriteLine("Login Successfully as user");
+                        MemberLogin();
+                    }
+                } else
+                {
+                    Console.WriteLine("Incorrect password or Account Name... Please try again");
+                    break;
+                }  
                 break;
 
             default:
@@ -260,7 +276,7 @@ public class MovieSystem: iMovieSystem
 
             case selection2:
                 // case remove entire movie out of the library
-                // Console.WriteLine(movieList.T); How can I print the list of existing Movie, the ToArray not seem to work
+                // Console.WriteLine(movieList.ToArray()); Question: How can I print the list of existing Movie, the ToArray not seem to work?
                 Console.WriteLine("Please choose a movie you want to remove DVDs: ");
                 string movieNameDelete = Console.ReadLine();
                 Console.WriteLine("Please choose the quantity of DVDs you want to add to the movie: ");
@@ -297,7 +313,7 @@ public class MovieSystem: iMovieSystem
                 }
                 Member newMember = new Member(enterFirstName, enterLastName, enterPhoneNumber, enterPassword);
                 addMember(newMember);
-                Console.WriteLine("Register successfully with username: " + enterFirstName.ToLower() + "." + enterLastName.ToLower()); // username will have the format: firstname.lastname
+                Console.WriteLine("Register successfully"); 
                 
                 break;
 

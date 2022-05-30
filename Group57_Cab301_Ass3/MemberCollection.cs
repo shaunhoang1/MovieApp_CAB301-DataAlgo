@@ -168,18 +168,34 @@ class MemberCollection : IMemberCollection
 
     // Post-condition: return the reference of the member object in the member collection, if this member is in the member collection; return null otherwise; member collection remains unchanged
 
-    public IMember Find(IMember member)
+    public IMember Find(IMember searchMember)
     {
-        Member findMember = null;
-        if (Search(member))
+        // To be implemented by students in Phase 1
+        int min = 0;
+        int max = count - 1;
+
+        while (min <= max)
         {
-            findMember = (Member) member;
-        } else
-        {
-            Console.WriteLine("No member found");
-            return null;
+            //The middle point in the array
+            int mean = (min + max) / 2;
+            if (searchMember.CompareTo(members[mean]) == 0)
+            {
+                return searchMember;
+            }
+            else if (searchMember.CompareTo(members[mean]) < 0)
+            {
+                //If the search key is lower than the mid point, the result lies on the left side of the mid point
+                //Decrease max by 1
+                max = mean - 1;
+            }
+            else
+            {
+                //If the search key is higher than the mid point, the result lies on the right side of the mid point
+                //Increase min by 1
+                min = mean + 1;
+            }
         }
-        return findMember;
+        return null;
     }
 
     // Remove all the members in this member collection
