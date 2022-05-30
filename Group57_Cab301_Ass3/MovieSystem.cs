@@ -47,12 +47,20 @@ public class MovieSystem: iMovieSystem
 
     public void deleteDVDs(IMovie aMovie, int quantity)
     {
-        aMovie.TotalCopies -= quantity;
-        aMovie.AvailableCopies -= quantity;
-        if (aMovie.TotalCopies <= 0) 
+        if (quantity > aMovie.TotalCopies)
         {
-            Console.WriteLine("There is no DVDs left, delete the movie out of the system");
-            movieList.Delete(aMovie);
+            Console.WriteLine("The number of delete DVDs can not bigger than current total DVDs: " + aMovie.TotalCopies + ". Pleasse try again");
+        }
+        else
+        {
+            aMovie.TotalCopies -= quantity;
+            aMovie.AvailableCopies -= quantity;
+            Console.WriteLine(quantity + " Dvds has been removed out of a movie");
+            if (aMovie.TotalCopies <= 0)
+            {
+                Console.WriteLine("There is no DVDs left, delete the movie out of the system");
+                movieList.Delete(aMovie);
+            }
         }
     }
 
@@ -260,13 +268,30 @@ public class MovieSystem: iMovieSystem
                 Console.WriteLine("Please choose the quantity of DVDs you want to add to the movie: ");
                 string enterDvdQuantity = Console.ReadLine();
                 int quantityDvdInput = InputValidation(enterDvdQuantity);
-                Console.WriteLine(quantityDvdInput + " Dvds has been removed out of a movie");
-                deleteDVDs(movieList.Search(movieNameDelete), quantityDvdInput); 
+                if (quantityDvdInput == -1)
+                {
+                    Console.WriteLine("Invalid Quantity. Please try again");
+                    break;
+                }
+                deleteDVDs(movieList.Search(movieNameDelete), quantityDvdInput);
                 break;
 
             case selection3:
                 // Save member's firstname, lastname, contact phone number
                 Console.WriteLine("Register a new member");
+                Console.WriteLine("Please enter user's First Name: ");
+                string enterFirstName = Console.ReadLine();
+                Console.WriteLine("Please enter user's Last Name: ");
+                string enterLastName = Console.ReadLine();
+                Console.WriteLine("Please enter user's phone number: ");
+                string enterPhoneNumber = Console.ReadLine();
+;
+                Console.WriteLine("Please enter user's pin/password: ");
+                string enterPassword = Console.ReadLine();
+
+                Member newMember = new Member(enterFirstName, enterLastName, enterPhoneNumber, enterPassword);
+                addMember(newMember);
+                
                 break;
 
             case selection4:
