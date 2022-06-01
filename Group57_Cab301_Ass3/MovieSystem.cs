@@ -11,8 +11,8 @@ public class MovieSystem: iMovieSystem
     Movie Avengers = new("Avengers", MovieGenre.Action, MovieClassification.M15Plus, 50, 10);
     Movie IronMan = new("IronMan", MovieGenre.Action, MovieClassification.M15Plus, 120, 10);
 
-    static MemberCollection users = new MemberCollection(100);
-    IMovieCollection movieList = new MovieCollection();
+    private MemberCollection users = new MemberCollection(100);
+    static IMovieCollection movieList = new MovieCollection();
     
     public void addExistingMovietoSystem()
     {
@@ -43,15 +43,14 @@ public class MovieSystem: iMovieSystem
         
     }
 
-    public void deleteDVDs(IMovie aMovie, int quantity)
+    public void deleteDVDs(IMovie aMovie, int quantity) 
     {
-        if (quantity > aMovie.TotalCopies)
+        if (aMovie.AvailableCopies == 0)
         {
-            Console.WriteLine("The number of delete DVDs can not bigger than current total DVDs: " + aMovie.TotalCopies + ". Pleasse try again");
+            Console.WriteLine("There are no available copies in the system to delete. Pleasse try again");
         }
         else
         {
-            aMovie.TotalCopies -= quantity;
             aMovie.AvailableCopies -= quantity;
             Console.WriteLine(quantity + " Dvds has been removed out of a movie");
             if (aMovie.TotalCopies <= 0)
@@ -66,6 +65,29 @@ public class MovieSystem: iMovieSystem
     {
         users.Add(aMember);
     }
+
+    public void Delete (IMember aMember)
+    {
+        users.Delete(aMember);
+    }
+
+    public void displayMemberPhoneNum(IMember aMember)
+    {
+        if (users.Search(aMember)) {
+            IMember findMem =  users.Find(aMember);
+            Console.WriteLine("The contact full number of " + findMem.FirstName.ToString() + " " + findMem.LastName.ToString() + " is: " + findMem.ContactNumber.ToString());
+        }
+    }
+
+    public void displayRentingMembers(IMovie aMovie)
+    {
+        Console.WriteLine(aMovie.Borrowers.ToString());
+    }
+
+    public void borrowMovie(IMovie aMovie)
+    {
+        //aMovie.AddBorrower();
+    };
 
     public void MainMenu()
     {
@@ -129,14 +151,11 @@ public class MovieSystem: iMovieSystem
                 Console.WriteLine("Enter your Last name: ");
                 string lastName = Console.ReadLine();
                 IMember searchUser =  new Member(firstName, lastName);
-                IMember verifyUser = users.Find(searchUser);
-                Console.WriteLine(verifyUser.ToString()); // Should print out the verify user with full information, currently only name. The problem might in the Find function?
                 //Check the account
                 if (users.Search(searchUser))
                 {
                     Console.WriteLine("Enter your Password: ");
                     password = Console.ReadLine();
-                    Console.WriteLine(users.Find(searchUser).Pin);
                     if (password == users.Find(searchUser).Pin)
                     {
                         Console.WriteLine("Login Successfully as user");
@@ -319,10 +338,31 @@ public class MovieSystem: iMovieSystem
 
             case selection4:
                 Console.WriteLine("Remove a registered member");
+                Console.WriteLine("Please enter delete First Name: ");
+                string deleteFirstName = Console.ReadLine();
+                Console.WriteLine("Please enter delete Last Name: ");
+                string deleteLastName = Console.ReadLine();
+                Member deleteUser = new Member(deleteFirstName, deleteLastName);
+                if (users.Search(deleteUser))
+                {
+                    Delete(deleteUser);
+                    Console.WriteLine(deleteUser.ToString() + " has been deleted");
+                }
+                
+                
                 break;
 
             case selection5:
                 Console.WriteLine("Display a member's phone number");
+                Console.WriteLine("Please enter member First Name: ");
+                string firstName5 = Console.ReadLine();
+                Console.WriteLine("Please enter member Last Name: ");
+                string lastName5 = Console.ReadLine();
+                Member mem5 = new Member(firstName5, lastName5);
+                if (users.Search(mem5))
+                {
+                    displayMemberPhoneNum(mem5);
+                }
                 break;
 
             case selection6:
@@ -397,6 +437,15 @@ public class MovieSystem: iMovieSystem
                 break;
         }
     }
+
+    //public IMember getMemberByName (IMember aMember)
+    //{
+    //    for (int i = 0; i < users.Number; i++)
+    //    {
+    //        if (aMember.FirstName == users.ToString && )
+    //    }
+    //    return null;
+    //}
 
     ////////////////////////////////////////////Valid option input for both member and staff menu///////////////////////////////////////////////////////////
     public static int InputValidation(string input)

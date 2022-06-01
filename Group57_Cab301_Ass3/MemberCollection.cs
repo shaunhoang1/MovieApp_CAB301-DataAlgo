@@ -180,7 +180,7 @@ class MemberCollection : IMemberCollection
             int mean = (min + max) / 2;
             if (searchMember.CompareTo(members[mean]) == 0)
             {
-                return searchMember;
+                return members[mean];
             }
             else if (searchMember.CompareTo(members[mean]) < 0)
             {
