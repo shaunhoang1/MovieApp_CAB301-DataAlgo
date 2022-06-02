@@ -11,8 +11,11 @@ public class MovieSystem: iMovieSystem
     Movie Avengers = new("Avengers", MovieGenre.Action, MovieClassification.M15Plus, 50, 10);
     Movie IronMan = new("IronMan", MovieGenre.Action, MovieClassification.M15Plus, 120, 10);
 
-    private MemberCollection users = new MemberCollection(100);
-    static IMovieCollection movieList = new MovieCollection();
+    private MemberCollection members = new MemberCollection(100);
+    private IMovieCollection movieList = new MovieCollection();
+    IMember currentMember;
+    IMember findMember;
+    IMovie findMovie;
     
     public void addExistingMovietoSystem()
     {
@@ -63,18 +66,18 @@ public class MovieSystem: iMovieSystem
 
     public void addMember(IMember aMember)
     {
-        users.Add(aMember);
+        members.Add(aMember);
     }
 
     public void Delete (IMember aMember)
     {
-        users.Delete(aMember);
+        members.Delete(aMember);
     }
 
     public void displayMemberPhoneNum(IMember aMember)
     {
-        if (users.Search(aMember)) {
-            IMember findMem =  users.Find(aMember);
+        if (members.Search(aMember)) {
+            IMember findMem = members.Find(aMember);
             Console.WriteLine("The contact full number of " + findMem.FirstName.ToString() + " " + findMem.LastName.ToString() + " is: " + findMem.ContactNumber.ToString());
         }
     }
@@ -84,10 +87,30 @@ public class MovieSystem: iMovieSystem
         Console.WriteLine(aMovie.Borrowers.ToString());
     }
 
+    public void displayMovieInfo(string movieTitle)
+    {
+        findMovie = movieList.Search(movieTitle);
+        if (findMovie == null)
+        {
+            Console.WriteLine("The movie does not exist, please enter the correct title");
+        } else
+        {
+            Console.WriteLine(findMovie.ToString());
+        }
+    }
+
     public void borrowMovie(IMovie aMovie)
     {
-        //aMovie.AddBorrower();
-    };
+        Console.WriteLine(currentMember.ToString());
+        aMovie.AddBorrower(currentMember);
+        Console.WriteLine("You have borrowed " + aMovie.Title + " successfully");
+    }
+
+    public void returnMovie(IMovie aMovie)
+    {
+        aMovie.RemoveBorrower(currentMember);
+        Console.WriteLine("You have return " + aMovie.Title + " successfully");
+    }
 
     public void MainMenu()
     {
@@ -97,13 +120,13 @@ public class MovieSystem: iMovieSystem
         while (true)
         {
             Console.WriteLine("==============================================================");
-            Console.WriteLine("Welcome to Community Library Movie DBD Mangaement System");
+            Console.WriteLine("Welcome to Community Library Movie DVD Mangaement System");
             Console.WriteLine("==============================================================");
 
             Console.WriteLine("=======================Main Menu==============================");
 
             Console.WriteLine("1. Staff Login\n2. Member Login\n0. Exit");
-            Console.WriteLine("Please enter your choice ==> (1/2/0)");
+            Console.WriteLine("Enter your choice ==> (1/2/0)");
             string enterValue = Console.ReadLine();
             int optionInput = InputValidation(enterValue);
             
@@ -150,15 +173,17 @@ public class MovieSystem: iMovieSystem
                 string firstName = Console.ReadLine();
                 Console.WriteLine("Enter your Last name: ");
                 string lastName = Console.ReadLine();
-                IMember searchUser =  new Member(firstName, lastName);
+                IMember searchMember =  new Member(firstName, lastName);
+                findMember = members.Find(searchMember);
                 //Check the account
-                if (users.Search(searchUser))
+                if (members.Search(searchMember)) // if user exist
                 {
                     Console.WriteLine("Enter your Password: ");
                     password = Console.ReadLine();
-                    if (password == users.Find(searchUser).Pin)
+                    if (password == findMember.Pin)
                     {
-                        Console.WriteLine("Login Successfully as user");
+                        currentMember = findMember;
+                        Console.WriteLine("Login Successfully as User. Hello " + currentMember.FirstName + " " + currentMember.LastName);
                         MemberLogin();
                     }
                 } else
@@ -186,7 +211,8 @@ public class MovieSystem: iMovieSystem
             Console.WriteLine("4. Remove a registered member from the system");
             Console.WriteLine("5. Display a member's contact phone number, given the member's name");
             Console.WriteLine("6. Display all members who are currently renting a praticular movie");
-            Console.WriteLine("7. Return to the main menu");
+            Console.WriteLine("0. Return to the main menu");
+            Console.WriteLine("Enter your choice ==> (1/2/3/4/5/6/0)");
 
             string enterValue = Console.ReadLine();
             int staffSelection = InputValidation(enterValue);
@@ -212,7 +238,7 @@ public class MovieSystem: iMovieSystem
                 Console.WriteLine("Find if the movie is existing in the system: ");
                 string movie = Console.ReadLine();
                 // check if the movie is existing, then just need to add the quantity to the existing => Assume that the movie title is unique
-                IMovie findMovie = movieList.Search(movie);
+                findMovie = movieList.Search(movie);
                 if (findMovie != null)
                 {
                     Console.WriteLine("The movie exist in the system. You just need add on quantity");
@@ -295,7 +321,8 @@ public class MovieSystem: iMovieSystem
 
             case selection2:
                 // case remove entire movie out of the library
-                // Console.WriteLine(movieList.ToArray()); Question: How can I print the list of existing Movie, the ToArray not seem to work?
+                Console.WriteLine(movieList.Number);
+                Console.WriteLine(movieList.ToArray());  //Question: How can I print the list of existing Movie, the ToArray not seem to work?
                 Console.WriteLine("Please choose a movie you want to remove DVDs: ");
                 string movieNameDelete = Console.ReadLine();
                 Console.WriteLine("Please choose the quantity of DVDs you want to add to the movie: ");
@@ -333,7 +360,7 @@ public class MovieSystem: iMovieSystem
                 Member newMember = new Member(enterFirstName, enterLastName, enterPhoneNumber, enterPassword);
                 addMember(newMember);
                 Console.WriteLine("Register successfully"); 
-                
+                Console.WriteLine(members.ToString());
                 break;
 
             case selection4:
@@ -343,7 +370,7 @@ public class MovieSystem: iMovieSystem
                 Console.WriteLine("Please enter delete Last Name: ");
                 string deleteLastName = Console.ReadLine();
                 Member deleteUser = new Member(deleteFirstName, deleteLastName);
-                if (users.Search(deleteUser))
+                if (members.Search(deleteUser))
                 {
                     Delete(deleteUser);
                     Console.WriteLine(deleteUser.ToString() + " has been deleted");
@@ -359,7 +386,7 @@ public class MovieSystem: iMovieSystem
                 Console.WriteLine("Please enter member Last Name: ");
                 string lastName5 = Console.ReadLine();
                 Member mem5 = new Member(firstName5, lastName5);
-                if (users.Search(mem5))
+                if (members.Search(mem5))
                 {
                     displayMemberPhoneNum(mem5);
                 }
@@ -388,6 +415,7 @@ public class MovieSystem: iMovieSystem
             Console.WriteLine("5. List current bow");
             Console.WriteLine("6. Display the top 3 movies rented by the members");
             Console.WriteLine("0. Return to the main menu");
+            Console.WriteLine("Enter your choice ==> (1/2/3/4/5/6/0)");
 
             //int memberSelection = Convert.ToInt32(Console.ReadLine());
             string enterValue = Console.ReadLine();
@@ -414,14 +442,31 @@ public class MovieSystem: iMovieSystem
 
             case selection2:
                 Console.WriteLine("Display movie info");
+                Console.Write("Enter the movie title you want to see the information: ");
+                string enterTitle = Console.ReadLine();
+                displayMovieInfo(enterTitle);
                 break;
 
             case selection3:
                 Console.WriteLine("Borrow movie");
+                Console.Write("Enter the movie you want to borrow: ");
+                string borMovie = Console.ReadLine();
+                findMovie = movieList.Search(borMovie);
+                if (findMovie != null)
+                {
+                    borrowMovie(findMovie);
+                }
                 break;
 
             case selection4:
                 Console.WriteLine("Return a movie DVD");
+                Console.Write("Enter the movie you want to borrow: ");
+                string enterReturnMovie = Console.ReadLine();
+                findMovie = movieList.Search(enterReturnMovie);
+                if (findMovie != null)
+                {
+                    returnMovie(findMovie);
+                }
                 break;
 
             case selection5:
@@ -438,14 +483,6 @@ public class MovieSystem: iMovieSystem
         }
     }
 
-    //public IMember getMemberByName (IMember aMember)
-    //{
-    //    for (int i = 0; i < users.Number; i++)
-    //    {
-    //        if (aMember.FirstName == users.ToString && )
-    //    }
-    //    return null;
-    //}
 
     ////////////////////////////////////////////Valid option input for both member and staff menu///////////////////////////////////////////////////////////
     public static int InputValidation(string input)

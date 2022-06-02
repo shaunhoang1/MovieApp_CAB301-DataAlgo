@@ -22,11 +22,11 @@ interface iMovieSystem
 
     //void displayMoviesInLibrary();
 
-    //void displayMovieInfo (IMovie aMovie);
+    void displayMovieInfo (string movieTitle);
 
     void borrowMovie (IMovie aMovie);
 
-    //void returnMovie (IMovie aMovie);
+    void returnMovie (IMovie aMovie);
 
     //void moviesBorrowList();
 

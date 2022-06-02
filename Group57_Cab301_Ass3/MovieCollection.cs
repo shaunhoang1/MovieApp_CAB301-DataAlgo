@@ -310,7 +310,6 @@ public class MovieCollection : IMovieCollection
         IMovie[] MovieList = new IMovie[count];
 		int index = 0;
 		InOrderTraversal(root, MovieList, ref index);
-
         return MovieList;
     }
 
