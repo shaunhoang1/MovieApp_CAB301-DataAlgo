@@ -54,5 +54,6 @@ public interface IMovieCollection
 	// Post-condition: all the movies have been removed from this movie collection 
 	void Clear();
 
+	public string ToString();
 }
 

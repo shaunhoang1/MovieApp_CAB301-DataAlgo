@@ -326,12 +326,19 @@ public class MovieCollection : IMovieCollection
     }
 
 
+	public string ToString()
+	{
+		IMovie[] movielist = ToArray();
+		string s = "";
+		for (int i = 0; i < count; i++)
+			s = s + movielist[i].ToString() + "\n";
+		return s;
+	}
 
-
-    // Clear this movie collection
-    // Pre-condotion: nil
-    // Post-condition: all the movies have been removed from this movie collection 
-    public void Clear()
+	// Clear this movie collection
+	// Pre-condotion: nil
+	// Post-condition: all the movies have been removed from this movie collection 
+	public void Clear()
 	{
 		//To be completed
 		root = null;

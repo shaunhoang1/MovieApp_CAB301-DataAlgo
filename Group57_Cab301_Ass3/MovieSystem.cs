@@ -11,11 +11,12 @@ public class MovieSystem: iMovieSystem
     Movie Avengers = new("Avengers", MovieGenre.Action, MovieClassification.M15Plus, 50, 10);
     Movie IronMan = new("IronMan", MovieGenre.Action, MovieClassification.M15Plus, 120, 10);
 
-    private MemberCollection members = new MemberCollection(100);
-    private IMovieCollection movieList = new MovieCollection();
+    MemberCollection members = new MemberCollection(100);
+    IMovieCollection movieList = new MovieCollection();
     IMember currentMember;
     IMember findMember;
     IMovie findMovie;
+    
     
     public void addExistingMovietoSystem()
     {
@@ -41,22 +42,23 @@ public class MovieSystem: iMovieSystem
         {
             aMovie.TotalCopies += quantity;
             aMovie.AvailableCopies += quantity;
-            Console.WriteLine(quantity + " DVDs has been added to the " + aMovie.Title + ". Available Copies: " + aMovie.AvailableCopies);
+            Console.WriteLine(quantity + " DVDs has been added to the " + aMovie.Title + ". Available Copies: " + aMovie.AvailableCopies + ". Total Copies: " + aMovie.TotalCopies);
         }
         
     }
 
     public void deleteDVDs(IMovie aMovie, int quantity) 
     {
-        if (aMovie.AvailableCopies == 0)
+        if (aMovie.AvailableCopies < quantity)
         {
-            Console.WriteLine("There are no available copies in the system to delete. Pleasse try again");
+            Console.WriteLine("The delete quantity is greater than the amount in the system. Pleasse try again");
         }
         else
         {
             aMovie.AvailableCopies -= quantity;
+            aMovie.TotalCopies -= quantity;
             Console.WriteLine(quantity + " Dvds has been removed out of a movie");
-            if (aMovie.TotalCopies <= 0)
+            if (aMovie.TotalCopies == 0)
             {
                 Console.WriteLine("There is no DVDs left, delete the movie out of the system");
                 movieList.Delete(aMovie);
@@ -112,6 +114,12 @@ public class MovieSystem: iMovieSystem
         Console.WriteLine("You have return " + aMovie.Title + " successfully");
     }
 
+    public void moviesBorrowList()
+    {
+        Console.WriteLine(currentMember.ToString());
+        Console.WriteLine(currentMember.BorrowingMoviesList.ToString());
+    }
+
     public void MainMenu()
     {
         ////////////////////////////// Assessment Task 3 User Interface////////////////////////////////////
@@ -120,7 +128,7 @@ public class MovieSystem: iMovieSystem
         while (true)
         {
             Console.WriteLine("==============================================================");
-            Console.WriteLine("Welcome to Community Library Movie DVD Mangaement System");
+            Console.WriteLine("Welcome to Community Library Movie DVD Management System");
             Console.WriteLine("==============================================================");
 
             Console.WriteLine("=======================Main Menu==============================");
@@ -185,10 +193,13 @@ public class MovieSystem: iMovieSystem
                         currentMember = findMember;
                         Console.WriteLine("Login Successfully as User. Hello " + currentMember.FirstName + " " + currentMember.LastName);
                         MemberLogin();
+                    } else
+                    {
+                        Console.WriteLine("Incorrect Password... Please try again");
                     }
                 } else
                 {
-                    Console.WriteLine("Incorrect password or Account Name... Please try again");
+                    Console.WriteLine("Incorrect Account Name... Please try again");
                     break;
                 }  
                 break;
@@ -241,6 +252,11 @@ public class MovieSystem: iMovieSystem
                 findMovie = movieList.Search(movie);
                 if (findMovie != null)
                 {
+                    if(findMovie.TotalCopies == 10)
+                    {
+                        Console.WriteLine("The movie exist in the system. But total copies is reach the limit. You can't add more DVDs");
+                        break;
+                    }
                     Console.WriteLine("The movie exist in the system. You just need add on quantity");
                     Console.WriteLine("Please choose the quantity of DVDs you want to add to the movie: ");
                     string enterQuantity = Console.ReadLine();
@@ -279,9 +295,9 @@ public class MovieSystem: iMovieSystem
                     Console.WriteLine("4: M15Plus");
                     Console.WriteLine("Enter movie classification: ");
                     string enterClassification = Console.ReadLine();
-                    if (Convert.ToInt32(enterClassification) < 1 || Convert.ToInt32(enterClassification) > 3) // Check if the input out of option
+                    if (Convert.ToInt32(enterClassification) < 1 || Convert.ToInt32(enterClassification) > 4) // Check if the input out of option
                     {
-                        Console.WriteLine("Invalid genre. Please try again with the option from 1-3");
+                        Console.WriteLine("Invalid genre. Please try again with the option from 1-4");
                         break;
                     }
                     int movieClassification = InputValidation(enterClassification);
@@ -320,9 +336,11 @@ public class MovieSystem: iMovieSystem
 
 
             case selection2:
-                // case remove entire movie out of the library
-                Console.WriteLine(movieList.Number);
-                Console.WriteLine(movieList.ToArray());  //Question: How can I print the list of existing Movie, the ToArray not seem to work?
+                IMovie[] printMovieList = movieList.ToArray();
+                for (int i = 0; i < printMovieList.Length; i++)
+                {
+                    Console.WriteLine(printMovieList[i].ToString());
+                }
                 Console.WriteLine("Please choose a movie you want to remove DVDs: ");
                 string movieNameDelete = Console.ReadLine();
                 Console.WriteLine("Please choose the quantity of DVDs you want to add to the movie: ");
@@ -337,7 +355,6 @@ public class MovieSystem: iMovieSystem
                 break;
 
             case selection3:
-                // Save member's firstname, lastname, contact phone number
                 Console.WriteLine("Register a new member");
                 Console.WriteLine("Please enter user's First Name: ");
                 string enterFirstName = Console.ReadLine();
@@ -373,7 +390,7 @@ public class MovieSystem: iMovieSystem
                 if (members.Search(deleteUser))
                 {
                     Delete(deleteUser);
-                    Console.WriteLine(deleteUser.ToString() + " has been deleted");
+                    Console.WriteLine(deleteUser.FirstName + deleteUser.LastName + " has been deleted");
                 }
                 
                 
@@ -394,6 +411,10 @@ public class MovieSystem: iMovieSystem
 
             case selection6:
                 Console.WriteLine("Display all members who are currently renting a movie");
+                Console.WriteLine("Enter the movie you want to display borrowers");
+                string enterMovie = Console.ReadLine();
+                findMovie = movieList.Search(enterMovie);
+                displayRentingMembers(findMovie);
                 break;
 
             default:
@@ -438,6 +459,11 @@ public class MovieSystem: iMovieSystem
         {
             case selection1:
                 Console.WriteLine("Browse movie");
+                IMovie[] printMovieList = movieList.ToArray();
+                for (int i = 0; i < printMovieList.Length; i++)
+                {
+                    Console.WriteLine(printMovieList[i].ToString());
+                }
                 break;
 
             case selection2:
@@ -460,9 +486,9 @@ public class MovieSystem: iMovieSystem
 
             case selection4:
                 Console.WriteLine("Return a movie DVD");
-                Console.Write("Enter the movie you want to borrow: ");
+                Console.Write("Enter the movie you want to return: ");
                 string enterReturnMovie = Console.ReadLine();
-                findMovie = movieList.Search(enterReturnMovie);
+                findMovie = movieList.Search(enterReturnMovie); 
                 if (findMovie != null)
                 {
                     returnMovie(findMovie);
@@ -471,6 +497,7 @@ public class MovieSystem: iMovieSystem
 
             case selection5:
                 Console.WriteLine("List current borrowings");
+                moviesBorrowList();
                 break;
 
             case selection6:

@@ -28,7 +28,7 @@ interface iMovieSystem
 
     void returnMovie (IMovie aMovie);
 
-    //void moviesBorrowList();
+    void moviesBorrowList();
 
     //void displayTopThree(); //Display top three most frequently borrowed movies by the members in the descending order by the number of their frequency.
 
