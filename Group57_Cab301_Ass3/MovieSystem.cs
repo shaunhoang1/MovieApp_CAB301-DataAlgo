@@ -127,12 +127,9 @@ public class MovieSystem: iMovieSystem
             if (movieBorrowList[i].Borrowers.Search(currentMember))
             {
                 Console.WriteLine(movieBorrowList[i].ToString());
-            } 
-            else
-            {
-                Console.WriteLine("You haven't borrow this movie: " + movieBorrowList[i].ToString());
             }
         }
+        Console.WriteLine();
     }
 
     public void MainMenu()
