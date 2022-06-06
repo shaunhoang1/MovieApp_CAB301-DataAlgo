@@ -103,9 +103,14 @@ public class MovieSystem: iMovieSystem
 
     public void borrowMovie(IMovie aMovie)
     {
-        Console.WriteLine(currentMember.ToString());
-        aMovie.AddBorrower(currentMember);
-        Console.WriteLine("You have borrowed " + aMovie.Title + " successfully");
+        if (aMovie.AddBorrower(currentMember))
+        {
+            aMovie.AddBorrower(currentMember);
+            Console.WriteLine("You have borrowed " + aMovie.Title + " successfully");
+        } else
+        {
+            Console.WriteLine("You can only borrow 1 DVDs each movie. Please try again");
+        }
     }
 
     public void returnMovie(IMovie aMovie)
@@ -116,8 +121,18 @@ public class MovieSystem: iMovieSystem
 
     public void moviesBorrowList()
     {
-        Console.WriteLine(currentMember.ToString());
-        Console.WriteLine(currentMember.BorrowingMoviesList.ToString());
+        IMovie[] movieBorrowList = movieList.ToArray();
+        for (int i = 0; i < movieBorrowList.Length; i++)
+        {
+            if (movieBorrowList[i].Borrowers.Search(currentMember))
+            {
+                Console.WriteLine(movieBorrowList[i].ToString());
+            } 
+            else
+            {
+                Console.WriteLine("You haven't borrow this movie: " + movieBorrowList[i].ToString());
+            }
+        }
     }
 
     public void MainMenu()
@@ -191,6 +206,7 @@ public class MovieSystem: iMovieSystem
                     if (password == findMember.Pin)
                     {
                         currentMember = findMember;
+                        Console.WriteLine(currentMember.ToString());
                         Console.WriteLine("Login Successfully as User. Hello " + currentMember.FirstName + " " + currentMember.LastName);
                         MemberLogin();
                     } else
@@ -413,8 +429,14 @@ public class MovieSystem: iMovieSystem
                 Console.WriteLine("Display all members who are currently renting a movie");
                 Console.WriteLine("Enter the movie you want to display borrowers");
                 string enterMovie = Console.ReadLine();
-                findMovie = movieList.Search(enterMovie);
-                displayRentingMembers(findMovie);
+                if (movieList.Search(enterMovie) != null)
+                {
+                    findMovie = movieList.Search(enterMovie);
+                    displayRentingMembers(findMovie);
+                } else
+                {
+                    Console.WriteLine("Could not find the movie. Please try again");
+                }
                 break;
 
             default:
@@ -481,6 +503,9 @@ public class MovieSystem: iMovieSystem
                 if (findMovie != null)
                 {
                     borrowMovie(findMovie);
+                } else
+                {
+                    Console.WriteLine("There is no movie like this in your borrow list. Please try again");
                 }
                 break;
 
@@ -492,6 +517,9 @@ public class MovieSystem: iMovieSystem
                 if (findMovie != null)
                 {
                     returnMovie(findMovie);
+                } else
+                {
+                    Console.WriteLine("There is no movie like this in your borrow list. Please try again");
                 }
                 break;
 

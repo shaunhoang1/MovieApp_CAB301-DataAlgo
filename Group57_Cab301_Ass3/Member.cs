@@ -9,17 +9,12 @@ class Member : IMember
     private string lastName;
     private string contactNumber;
     private string pin;
-    private IMovieCollection borrowingMovieList;
-
-
 
     // Properties
     public string FirstName { get { return firstName; } set { firstName = value; } }  // Get and set the first name of this member
     public string LastName { get { return lastName; } set { lastName = value; } }  // Get and set the last name of this member
     public string ContactNumber { get { return contactNumber; } set { contactNumber = value; } }  // Get and set the contact number of this member
     public string Pin { get { return pin; } set { pin = value; } }// Get and set a pin number
-
-    public IMovieCollection BorrowingMoviesList { get { return borrowingMovieList; } set { borrowingMovieList = value; } }
 
 
     // Constructor with member's first name and lastname
@@ -36,7 +31,6 @@ class Member : IMember
         this.lastName = lastName;
         this.contactNumber = contactNumber;
         this.pin = pin;
-        borrowingMovieList = new MovieCollection();
     }
 
 
@@ -70,7 +64,7 @@ class Member : IMember
     // Post-condition: a  string containing the first name, last name, and contact number of this member is returned
     public string ToString()
     {
-        return lastName + ", " + firstName + ", " + contactNumber + ", " + pin + ", " + borrowingMovieList;
+        return lastName + ", " + firstName + ", " + contactNumber + ", " + pin;
     }
 }
 
