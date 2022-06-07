@@ -127,6 +127,10 @@ public class MovieSystem: iMovieSystem
             if (movieBorrowList[i].Borrowers.Search(currentMember))
             {
                 Console.WriteLine(movieBorrowList[i].ToString());
+            } else
+            {
+                Console.WriteLine("You did not borrow any movie yet.");
+                break;
             }
         }
         Console.WriteLine();
@@ -247,7 +251,6 @@ public class MovieSystem: iMovieSystem
                     if (password == findMember.Pin)
                     {
                         currentMember = findMember;
-                        Console.WriteLine(currentMember.ToString());
                         Console.WriteLine("Login Successfully as User. Hello " + currentMember.FirstName + " " + currentMember.LastName);
                         MemberLogin();
                     } else
@@ -354,7 +357,7 @@ public class MovieSystem: iMovieSystem
                     string enterClassification = Console.ReadLine();
                     if (Convert.ToInt32(enterClassification) < 1 || Convert.ToInt32(enterClassification) > 4) // Check if the input out of option
                     {
-                        Console.WriteLine("Invalid genre. Please try again with the option from 1-4");
+                        Console.WriteLine("Invalid classification. Please try again with the option from 1-4");
                         break;
                     }
                     int movieClassification = InputValidation(enterClassification);
@@ -400,7 +403,12 @@ public class MovieSystem: iMovieSystem
                 }
                 Console.WriteLine("Please choose a movie you want to remove DVDs: ");
                 string movieNameDelete = Console.ReadLine();
-                Console.WriteLine("Please choose the quantity of DVDs you want to add to the movie: ");
+                if (movieList.Search(movieNameDelete) == null)
+                {
+                    Console.WriteLine("The movie is not inside the system. Please see the list above to choose correctly");
+                    break;
+                }
+                Console.WriteLine("Please choose the quantity of DVDs you want to delete from the movie: ");
                 string enterDvdQuantity = Console.ReadLine();
                 int quantityDvdInput = InputValidation(enterDvdQuantity);
                 if (quantityDvdInput == -1)
@@ -448,6 +456,11 @@ public class MovieSystem: iMovieSystem
                 {
                     Delete(deleteUser);
                     Console.WriteLine(deleteUser.FirstName + " " + deleteUser.LastName + " has been deleted");
+                } 
+                else
+                {
+                    Console.WriteLine("The user does not exist. Please try again");
+                    break;
                 }
                 
                 
@@ -464,6 +477,11 @@ public class MovieSystem: iMovieSystem
                 {
                     displayMemberPhoneNum(mem5);
                 }
+                else
+                {
+                    Console.WriteLine("The user does not exist. Please try again");
+                    break;
+                }
                 break;
 
             case selection6:
@@ -473,10 +491,16 @@ public class MovieSystem: iMovieSystem
                 if (movieList.Search(enterMovie) != null)
                 {
                     findMovie = movieList.Search(enterMovie);
+                    if (findMovie.Borrowers.Number == 0)
+                    {
+                        Console.WriteLine("This movie has no borrower");
+                        break;
+                    }
                     displayRentingMembers(findMovie);
                 } else
                 {
                     Console.WriteLine("Could not find the movie. Please try again");
+                    break;
                 }
                 break;
 
@@ -546,7 +570,7 @@ public class MovieSystem: iMovieSystem
                     borrowMovie(findMovie);
                 } else
                 {
-                    Console.WriteLine("There is no movie like this in your borrow list. Please try again");
+                    Console.WriteLine("There is no movie like this in our system. Please try again");
                 }
                 break;
 
@@ -557,6 +581,11 @@ public class MovieSystem: iMovieSystem
                 findMovie = movieList.Search(enterReturnMovie); 
                 if (findMovie != null)
                 {
+                    if (findMovie.Borrowers != currentMember)
+                    {
+                        Console.WriteLine("You have not borrow this movie. Please try again");
+                        break;
+                    }
                     returnMovie(findMovie);
                 } else
                 {
