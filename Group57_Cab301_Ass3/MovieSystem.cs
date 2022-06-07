@@ -138,11 +138,10 @@ public class MovieSystem: iMovieSystem
 
     public void displayTop3Movies()
     {
-        IMovie[] movieArray = movieList.ToArray(); 
+        IMovie[] movieArray = movieList.ToArray();
         int first, second, third;
         IMovie firstMovie = null, secondMovie = null, thirdMovie = null;
-        first = second = third = int.MaxValue;
-
+        first = second = third = int.MinValue;
         if (movieArray.Length < 3)
         {
             Console.WriteLine("Invalid Input");
@@ -151,33 +150,37 @@ public class MovieSystem: iMovieSystem
         {
             for (int i = 0; i < movieArray.Length; i++)
             {
-                if (movieArray[i].AvailableCopies < first)
+                if (movieArray[i].NoBorrowings > first)
                 {
                     third = second;
                     second = first;
-                    first = movieArray[i].AvailableCopies;
-
+                    first = movieArray[i].NoBorrowings;
                     thirdMovie = secondMovie;
                     secondMovie = firstMovie;
                     firstMovie = movieArray[i];
                 }
-                else if (movieArray[i].AvailableCopies < second)
+                else if (movieArray[i].NoBorrowings > second)
                 {
                     third = second;
-                    second = movieArray[i].AvailableCopies;
-
+                    second = movieArray[i].NoBorrowings;
                     thirdMovie = secondMovie;
                     secondMovie = movieArray[i];
                 }
-                else if (movieArray[i].AvailableCopies < third)
+                else if (movieArray[i].NoBorrowings > third)
                 {
-                    third = movieArray[i].AvailableCopies;
+                    third = movieArray[i].NoBorrowings;
                     thirdMovie = movieArray[i];
                 }
             }
+            if (first == 0 && second == 0 && third == 0)
+            {
+                Console.WriteLine("Not enough movie being borrowed. Please borrow more.");
+            }
+            else
+            {
+                Console.WriteLine("#1: {0}\n#2: {1}\n#3: {2}\n", firstMovie.ToString(), secondMovie.ToString(), thirdMovie.ToString());
+            }
         }
-
-        Console.WriteLine("#1: {0}\n#2: {1}\n#3: {2}\n", firstMovie.ToString(), secondMovie.ToString(), thirdMovie.ToString());
     }
 
     public void MainMenu()
@@ -634,43 +637,5 @@ public class MovieSystem: iMovieSystem
         }
 
         return -1;
-    }
-
-    /////////////////////////////////////////////Helper Functions for displaying top 3 movies //////////////////////////////////////////////////////////////
-    public static int FindLargestElements(int[] array)
-    {
-        int first, second, third;
-        int count = 0;
-        first = second = third = int.MinValue;
-
-        if (array.Length < 3)
-        {
-            Console.WriteLine("Invalid Input");
-        }
-        else
-        {
-            for (int i = 0; i < array.Length; i++)
-            {
-                count++;
-                if (array[i] > first)
-                {
-                    third = second;
-                    second = first;
-                    first = array[i];
-                }
-                else if (array[i] > second)
-                {
-                    third = second;
-                    second = array[i];
-                }
-                else if (array[i] > third)
-                {
-                    third = array[i];
-                    count++;
-                }
-            }
-        }
-        return count;
-
     }
 }
